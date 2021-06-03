@@ -17,7 +17,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Basket.API", "Services\Bask
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Discount", "Discount", "{7D5A0090-2332-443E-908D-8CC3000CD236}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Discount.API", "Services\Discount\Discount.API\Discount.API.csproj", "{3C1D0F9F-831D-47B7-B99C-0C5284C425B6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Discount.API", "Services\Discount\Discount.API\Discount.API.csproj", "{3C1D0F9F-831D-47B7-B99C-0C5284C425B6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Discount.Grpc", "Services\Discount\Discount.Grpc\Discount.Grpc.csproj", "{BE1CF27E-DB87-46CE-B186-B1707AA9B4D3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,6 +43,10 @@ Global
 		{3C1D0F9F-831D-47B7-B99C-0C5284C425B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3C1D0F9F-831D-47B7-B99C-0C5284C425B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3C1D0F9F-831D-47B7-B99C-0C5284C425B6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE1CF27E-DB87-46CE-B186-B1707AA9B4D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE1CF27E-DB87-46CE-B186-B1707AA9B4D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE1CF27E-DB87-46CE-B186-B1707AA9B4D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE1CF27E-DB87-46CE-B186-B1707AA9B4D3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -52,6 +58,7 @@ Global
 		{75DBCE99-36C3-4E0C-9E86-74003DB6F70B} = {A5C63D89-33D8-4D75-9813-B0ECBBFC8D82}
 		{7D5A0090-2332-443E-908D-8CC3000CD236} = {C2C001C8-1C5C-4295-B017-7D00CFC452BF}
 		{3C1D0F9F-831D-47B7-B99C-0C5284C425B6} = {7D5A0090-2332-443E-908D-8CC3000CD236}
+		{BE1CF27E-DB87-46CE-B186-B1707AA9B4D3} = {7D5A0090-2332-443E-908D-8CC3000CD236}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F3BCED49-CA86-4632-BC54-757B4F87E306}
