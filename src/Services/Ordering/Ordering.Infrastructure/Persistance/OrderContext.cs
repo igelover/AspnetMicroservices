@@ -19,7 +19,7 @@ namespace Ordering.Infrastructure.Persistance
         {
             foreach (var entry in ChangeTracker.Entries<EntityBase>())
             {
-                switch(entry.State)
+                switch (entry.State)
                 {
                     case EntityState.Added:
                         entry.Entity.CreatedBy = "admin";

@@ -24,7 +24,8 @@ namespace Discount.Grpc.Repositories
             var coupon = await connection.QueryFirstOrDefaultAsync<Coupon>
                 ("SELECT * FROM Coupon WHERE ProductName = @ProductName", new { ProductName = productName });
 
-            return coupon ?? new Coupon {
+            return coupon ?? new Coupon
+            {
                 ProductName = "No Discount",
                 Description = "No Discount",
                 Amount = 0

@@ -12,7 +12,7 @@ namespace Discount.API.Extensions
         public static IHost MigrateDatabase<TContext>(this IHost host, int? retry = 0)
         {
             int retryForAvailability = retry.Value;
-            using(var scope = host.Services.CreateScope())
+            using (var scope = host.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
                 var configuration = services.GetRequiredService<IConfiguration>();
@@ -55,7 +55,7 @@ namespace Discount.API.Extensions
 
                     logger.LogInformation("Migrated postresql database.");
                 }
-                catch (NpgsqlException ex )
+                catch (NpgsqlException ex)
                 {
                     logger.LogError(ex, "An error occurred while migrating the postresql database");
 

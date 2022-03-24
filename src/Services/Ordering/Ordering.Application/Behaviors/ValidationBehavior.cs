@@ -31,7 +31,7 @@ namespace Ordering.Application.Behaviors
                     throw new ValidationException(failures);
                 }
             }
-            
+
             return await next();
         }
     }
