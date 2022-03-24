@@ -10,8 +10,11 @@ services:
   discountdb:
     image: postgres
 
-  portainer:
-    image: portainer/portainer-ce
+  #portainer:
+  #  image: portainer/portainer-ce
+
+  orderdb:
+    image: "mcr.microsoft.com/mssql/server:2019-latest"
 
   catalog.api:
     image: ${DOCKER_REGISTRY-}catalogapi
@@ -41,5 +44,3 @@ volumes:
   mongo_data:
   postgres_data:
   portainer_data:
-
-

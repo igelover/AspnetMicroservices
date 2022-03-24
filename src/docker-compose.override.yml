@@ -27,15 +27,24 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data/
 
-  portainer:
-    container_name: portainer
+  #portainer:
+  #  container_name: portainer
+  #  restart: always
+  #  ports:
+  #    - "8080:8000"
+  #    - "9000:9000"
+  #  volumes:
+  #    - /var/run/docker.sock:/var/run/docker.sock
+  #    - portainer_data:/data
+
+  orderdb:
+    container_name: orderdb
+    environment:
+        SA_PASSWORD: "admin1234"
+        ACCEPT_EULA: "Y"
     restart: always
     ports:
-      - "8080:8000"
-      - "9000:9000"
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - portainer_data:/data
+        - "1433:1433"
 
   catalog.api:
     container_name: catalog.api
