@@ -8,7 +8,8 @@ FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["WebApps/AspnetRunBasics/AspnetRunBasics.csproj", "WebApps/AspnetRunBasics/"]
-RUN dotnet restore "./WebApps/AspnetRunBasics/AspnetRunBasics.csproj"
+COPY ["BuildingBlocks/Common.Logging/Common.Logging.csproj", "BuildingBlocks/Common.Logging/"]
+RUN dotnet restore "./WebApps/AspnetRunBasics/./AspnetRunBasics.csproj"
 COPY . .
 WORKDIR "/src/WebApps/AspnetRunBasics"
 RUN dotnet build "./AspnetRunBasics.csproj" -c $BUILD_CONFIGURATION -o /app/build

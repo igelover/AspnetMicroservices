@@ -111,8 +111,8 @@ docker-compose -f docker-compose.yml -f docker-compose.override.yml up -d
 * **Rabbit Management Dashboard -> http://host.docker.internal:15672**   -- guest/guest
 * ~~**Portainer -> http://host.docker.internal:9000**   -- admin/admin1234~~
 * ~~**pgAdmin PostgreSQL -> http://host.docker.internal:5050**   -- admin@aspnetrun.com/admin1234~~
-* ~~**Elasticsearch -> http://host.docker.internal:9200**~~
-* ~~**Kibana -> http://host.docker.internal:5601**~~
+* **Elasticsearch -> http://host.docker.internal:9200**
+* **Kibana -> http://host.docker.internal:5601**
 
 * ~~**Web Status -> http://host.docker.internal:8007**~~
 * **Web UI -> http://host.docker.internal:8006**
