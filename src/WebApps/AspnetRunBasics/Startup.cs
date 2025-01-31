@@ -1,4 +1,5 @@
 using System;
+using System.Net.Http;
 using AspnetRunBasics.Services;
 using Common.Logging;
 using Microsoft.AspNetCore.Builder;
@@ -6,6 +7,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Polly.Extensions.Http;
+using Polly;
+using Serilog;
 
 namespace AspnetRunBasics
 {
@@ -25,17 +29,49 @@ namespace AspnetRunBasics
 
             services.AddHttpClient<ICatalogService, CatalogService>(c =>
                 c.BaseAddress = new Uri(Configuration["ApiSettings:GatewayAddress"]))
-                .AddHttpMessageHandler<LoggingDelegatingHandler>();
+                .AddHttpMessageHandler<LoggingDelegatingHandler>()
+                .AddPolicyHandler(GetRetryPolicy())
+                .AddPolicyHandler(GetCircuitBrakerPolicy());
 
             services.AddHttpClient<IBasketService, BasketService>(c =>
                 c.BaseAddress = new Uri(Configuration["ApiSettings:GatewayAddress"]))
-                .AddHttpMessageHandler<LoggingDelegatingHandler>();
+                .AddHttpMessageHandler<LoggingDelegatingHandler>()
+                .AddPolicyHandler(GetRetryPolicy())
+                .AddPolicyHandler(GetCircuitBrakerPolicy());
 
             services.AddHttpClient<IOrderService, OrderService>(c =>
                 c.BaseAddress = new Uri(Configuration["ApiSettings:GatewayAddress"]))
-                .AddHttpMessageHandler<LoggingDelegatingHandler>();
+                .AddHttpMessageHandler<LoggingDelegatingHandler>()
+                .AddPolicyHandler(GetRetryPolicy())
+                .AddPolicyHandler(GetCircuitBrakerPolicy());
 
             services.AddRazorPages();
+        }
+
+        private static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()
+        {
+            return HttpPolicyExtensions
+                .HandleTransientHttpError()
+                .WaitAndRetryAsync(
+                    retryCount: 3,
+                    sleepDurationProvider: retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
+                    onRetry: (response, sleepDuration, context) =>
+                    {
+                        Log.Error($"Waiting {sleepDuration} before re-attempting, due to " +
+                            (!string.IsNullOrWhiteSpace(response.Exception?.Message) ?
+                            $"exception: {response.Exception?.Message}" :
+                            $"StatusCode: {(int)response.Result.StatusCode}, ReasonPhrase: {response.Result.ReasonPhrase}"));
+                    });
+        }
+
+        private static IAsyncPolicy<HttpResponseMessage> GetCircuitBrakerPolicy()
+        {
+            return HttpPolicyExtensions
+                .HandleTransientHttpError()
+                .CircuitBreakerAsync(
+                    handledEventsAllowedBeforeBreaking: 3,
+                    durationOfBreak: TimeSpan.FromSeconds(30)
+                );
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

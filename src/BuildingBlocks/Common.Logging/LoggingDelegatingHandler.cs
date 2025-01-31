@@ -17,15 +17,16 @@ namespace Common.Logging
         {
             try
             {
+                _logger.LogInformation("Sending request to {Url}", request.RequestUri);
                 var response = await base.SendAsync(request, cancellationToken);
 
                 if (response.IsSuccessStatusCode)
                 {
-                    _logger.LogInformation("Received a sucess response from {Url}", response?.RequestMessage?.RequestUri);
+                    _logger.LogInformation("Received a success response from {Url}", response?.RequestMessage?.RequestUri);
                 }
                 else
                 {
-                    _logger.LogWarning("Received a non-sucess statusCode {StatusCode} from {Url}", (int)response.StatusCode, response?.RequestMessage?.RequestUri);
+                    _logger.LogWarning("Received a non-success statusCode {StatusCode} from {Url}", (int)response.StatusCode, response?.RequestMessage?.RequestUri);
                 }
 
                 return response;
