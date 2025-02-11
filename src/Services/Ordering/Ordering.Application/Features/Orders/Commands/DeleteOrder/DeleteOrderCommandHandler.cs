@@ -21,7 +21,7 @@ namespace Ordering.Application.Features.Orders.Commands.DeleteOrder
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public async Task<Unit> Handle(DeleteOrderCommand request, CancellationToken cancellationToken)
+        async Task IRequestHandler<DeleteOrderCommand>.Handle(DeleteOrderCommand request, CancellationToken cancellationToken)
         {
             var orderToDelete = await _repository.GetByIdAsync(request.Id);
             if (orderToDelete is null)
@@ -32,7 +32,6 @@ namespace Ordering.Application.Features.Orders.Commands.DeleteOrder
 
             await _repository.DeleteAsync(orderToDelete);
             _logger.LogInformation("Order {orderId} was successfully deleted.", orderToDelete.Id);
-            return Unit.Value;
         }
     }
 }

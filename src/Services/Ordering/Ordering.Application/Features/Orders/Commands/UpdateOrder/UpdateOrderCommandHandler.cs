@@ -3,7 +3,6 @@ using MediatR;
 using Microsoft.Extensions.Logging;
 using Ordering.Application.Contracts.Persistance;
 using Ordering.Application.Exceptions;
-using Ordering.Application.Models;
 using Ordering.Domain.Entities;
 using System;
 using System.Threading;
@@ -24,7 +23,7 @@ namespace Ordering.Application.Features.Orders.Commands.UpdateOrder
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public async Task<Unit> Handle(UpdateOrderCommand request, CancellationToken cancellationToken)
+        async Task IRequestHandler<UpdateOrderCommand>.Handle(UpdateOrderCommand request, CancellationToken cancellationToken)
         {
             var orderToUpdate = await _repository.GetByIdAsync(request.Order.Id);
             if (orderToUpdate is null)
@@ -33,10 +32,9 @@ namespace Ordering.Application.Features.Orders.Commands.UpdateOrder
                 throw new NotFoundException(nameof(Order), request.Order.Id);
             }
 
-            _mapper.Map(request.Order, orderToUpdate, typeof(OrderDTO), typeof(Order));
+            _mapper.Map(request.Order, orderToUpdate);
             await _repository.UpdateAsync(orderToUpdate);
             _logger.LogInformation("Order {orderId} was successfully updated.", orderToUpdate.Id);
-            return Unit.Value;
         }
     }
 }
