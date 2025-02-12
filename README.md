@@ -82,7 +82,7 @@ We have implemented below **features over the run-aspnetcore-microservices repos
 You will need the following tools:
 
 * [Visual Studio 2022](https://visualstudio.microsoft.com/downloads/)
-* [.Net 6 or later](https://dotnet.microsoft.com/download/dotnet/6.0)
+* [.Net 9 or later](https://dotnet.microsoft.com/download/dotnet/9.0)
 * [Docker Desktop](https://www.docker.com/products/docker-desktop)
 
 ### Installing
@@ -127,5 +127,5 @@ docker-compose -f docker-compose.yml -f docker-compose.override.yml up -d
 ## Authors
 
 * **Mehmet Ozkaya** - *Initial work* - [mehmetozkaya](https://github.com/mehmetozkaya)
-* **Israel Gelover** - *Migrated to .Net 6* - [igelover](https://github.com/igelover)
+* **Israel Gelover** - *Migrated to .Net 9* - [igelover](https://github.com/igelover)
 
