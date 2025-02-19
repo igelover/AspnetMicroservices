@@ -1,40 +1,32 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using System;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Threading;
 
 namespace Ordering.API.Extensions
 {
     public static class HostExtensions
     {
-        public static IHost MigrateDatabase<TContext>(this IHost host, Action<TContext, IServiceProvider> seeder, int? retry = 0) where TContext : DbContext
+        public static IHost MigrateDatabase<TContext>(this IHost host, Action<TContext, IServiceProvider> seeder) where TContext : DbContext
         {
-            int retryForAvailability = retry.Value;
             using (var scope = host.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
                 var logger = services.GetRequiredService<ILogger<TContext>>();
                 var context = services.GetService<TContext>();
+                var contextName = typeof(TContext).Name;
 
                 try
                 {
-                    logger.LogInformation("Migrating database associated with context {DbContextName}.", typeof(TContext).Name);
-
+                    logger.LogInformation("Migrating database associated with context {DbContextName}.", contextName);
                     InvokeSeeder(seeder, context, services);
+                    logger.LogInformation("Migrated database associated with context {DbContextName}.", contextName);
                 }
                 catch (SqlException ex)
                 {
-                    logger.LogError(ex, "An error occurred while migrating the database used on context {DbContextName}.", typeof(TContext).Name);
-
-                    if (retryForAvailability < 50)
-                    {
-                        retryForAvailability++;
-                        Thread.Sleep(2000);
-                        MigrateDatabase<TContext>(host, seeder, retryForAvailability);
-                    }
+                    logger.LogError(ex, "An error occurred while migrating the database used on context {DbContextName}.", contextName);
                 }
             }
 

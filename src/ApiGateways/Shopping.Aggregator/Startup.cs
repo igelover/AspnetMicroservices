@@ -1,3 +1,5 @@
+using System;
+using System.Net.Http;
 using Common.Logging;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -6,22 +8,17 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Polly;
+using Polly.CircuitBreaker;
 using Polly.Extensions.Http;
+using Polly.Retry;
 using Serilog;
 using Shopping.Aggregator.Services;
-using System;
-using System.Net.Http;
 
 namespace Shopping.Aggregator
 {
-    public class Startup
+    public class Startup(IConfiguration configuration)
     {
-        public Startup(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
-
-        public IConfiguration Configuration { get; }
+        public IConfiguration Configuration { get; } = configuration;
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -54,7 +51,7 @@ namespace Shopping.Aggregator
             });
         }
 
-        private static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()
+        private static AsyncRetryPolicy<HttpResponseMessage> GetRetryPolicy()
         {
             return HttpPolicyExtensions
                 .HandleTransientHttpError()
@@ -70,7 +67,7 @@ namespace Shopping.Aggregator
                     });
         }
 
-        private static IAsyncPolicy<HttpResponseMessage> GetCircuitBrakerPolicy()
+        private static AsyncCircuitBreakerPolicy<HttpResponseMessage> GetCircuitBrakerPolicy()
         {
             return HttpPolicyExtensions
                 .HandleTransientHttpError()

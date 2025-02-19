@@ -12,6 +12,13 @@ namespace Common.Logging
             return (context, configuration) =>
             {
                 var elasticUri = context.Configuration.GetValue<string>("ElasticConfiguration:Uri");
+                var indexFormat = $"applogs" +
+                    $"-" +
+                    $"{context.HostingEnvironment.ApplicationName?.ToLower().Replace(".", "-")}" +
+                    $"-" +
+                    $"{context.HostingEnvironment.EnvironmentName?.ToLower().Replace(".", "-")}" +
+                    $"-" +
+                    $"{DateTime.UtcNow:yyyy-MM}";
 
                 configuration
                     .Enrich.FromLogContext()
@@ -19,9 +26,9 @@ namespace Common.Logging
                     .WriteTo.Debug()
                     .WriteTo.Console()
                     .WriteTo.Elasticsearch(
-                        new ElasticsearchSinkOptions(new Uri(elasticUri))
+                        new ElasticsearchSinkOptions(new Uri(elasticUri!))
                         {
-                            IndexFormat = $"applogs-{context.HostingEnvironment.ApplicationName?.ToLower().Replace(".", "-")}-{context.HostingEnvironment.EnvironmentName?.ToLower().Replace(".", "-")}-{DateTime.UtcNow:yyyy-MM}",
+                            IndexFormat = indexFormat,
                             AutoRegisterTemplate = true,
                             NumberOfShards = 2,
                             NumberOfReplicas = 1

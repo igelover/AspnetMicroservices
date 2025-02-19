@@ -7,20 +7,17 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Polly.Extensions.Http;
 using Polly;
+using Polly.CircuitBreaker;
+using Polly.Extensions.Http;
+using Polly.Retry;
 using Serilog;
 
 namespace AspnetRunBasics
 {
-    public class Startup
+    public class Startup(IConfiguration configuration)
     {
-        public Startup(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
-
-        public IConfiguration Configuration { get; }
+        public IConfiguration Configuration { get; } = configuration;
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -48,7 +45,7 @@ namespace AspnetRunBasics
             services.AddRazorPages();
         }
 
-        private static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()
+        private static AsyncRetryPolicy<HttpResponseMessage> GetRetryPolicy()
         {
             return HttpPolicyExtensions
                 .HandleTransientHttpError()
@@ -64,7 +61,7 @@ namespace AspnetRunBasics
                     });
         }
 
-        private static IAsyncPolicy<HttpResponseMessage> GetCircuitBrakerPolicy()
+        private static AsyncCircuitBreakerPolicy<HttpResponseMessage> GetCircuitBrakerPolicy()
         {
             return HttpPolicyExtensions
                 .HandleTransientHttpError()
