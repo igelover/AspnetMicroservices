@@ -1,14 +1,15 @@
-﻿using Ordering.Application.Contracts.Persistance;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using Ordering.Application.Contracts.Persistance;
 using Ordering.Domain.Entities;
 using Ordering.Infrastructure.Persistance;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Ordering.Infrastructure.Repositories
 {
     public class OrderRepository : RepositoryBase<Order>, IOrderRepository
     {
-        public OrderRepository(OrderContext dbContext) : base(dbContext)
+        public OrderRepository(IDbContextFactory<OrderContext> dbContextFactory) : base(dbContextFactory)
         {
         }
 
