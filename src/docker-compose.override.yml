@@ -3,7 +3,7 @@ services:
     container_name: catalogdb
     restart: always
     ports:
-      - "27017:27107"
+      - "27017:27017"
     volumes:
       - mongo_data:/data/db
 
@@ -55,6 +55,7 @@ services:
     container_name: catalog.api
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
       - "DatabaseSettings:ConnectionString=mongodb://catalogdb:27017"
       - "ElasticConfiguration:Uri=http://elasticsearch:9200"
     depends_on:
@@ -66,6 +67,7 @@ services:
     container_name: basket.api
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
       - "CacheSettings:ConnectionString=basketdb:6379"
       - "GrpcSettings:DiscountUrl=http://discount.grpc:8080"
       - "EventBusSettings:HostAddress=amqp://guest:guest@rabbitmq:5672"
@@ -80,6 +82,7 @@ services:
     container_name: discount.api
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
       - "DatabaseSettings:ConnectionString=Server=discountdb;Port=5432;Database=DiscountDb;User Id=admin;Password=Admin1234!;"
       - "ElasticConfiguration:Uri=http://elasticsearch:9200"
     depends_on:
@@ -91,6 +94,7 @@ services:
     container_name: discount.grpc
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
       - "DatabaseSettings:ConnectionString=Server=discountdb;Port=5432;Database=DiscountDb;User Id=admin;Password=Admin1234!;"
       - "ElasticConfiguration:Uri=http://elasticsearch:9200"
     depends_on:
@@ -102,7 +106,8 @@ services:
     container_name: ordering.api
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - "ConnectionStrings:OrderingConnectionString=Server=orderdb;Database=OrderDb;User Id=sa;Password=Admin1234!"
+      - ASPNETCORE_HTTP_PORTS=8080
+      - "ConnectionStrings:OrderingConnectionString=Server=orderdb;Database=OrderDb;User Id=sa;Password=Admin1234!;TrustServerCertificate=True"
       - "EventBusSettings:HostAddress=amqp://guest:guest@rabbitmq:5672"
       - "ElasticConfiguration:Uri=http://elasticsearch:9200"
     depends_on:
@@ -115,6 +120,7 @@ services:
     container_name: ocelotapigw
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
       - "ElasticConfiguration:Uri=http://elasticsearch:9200"
     depends_on:
         - catalog.api
@@ -128,6 +134,7 @@ services:
     container_name: shopping.aggregator
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
       - "ApiSettings:CatalogUrl=http://catalog.api:8080"
       - "ApiSettings:BasketUrl=http://basket.api:8080"
       - "ApiSettings:OrderingUrl=http://ordering.api:8080"
@@ -143,6 +150,7 @@ services:
     container_name: aspnetrunbasics
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
       - "ApiSettings:GatewayAddress=http://ocelotapigw:8080"
       - "ElasticConfiguration:Uri=http://elasticsearch:9200"
     depends_on:
@@ -174,3 +182,25 @@ services:
       - elasticsearch
     ports:
       - "5601:5601"
+
+  webstatus:
+    container_name: webstatus
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
+      - HealthChecks-UI__HealthChecks:0:Name=Catalog Health Check
+      - HealthChecks-UI__HealthChecks:0:Uri=http://catalog.api:8080/health
+      - HealthChecks-UI__HealthChecks:1:Name=Basket Health Check
+      - HealthChecks-UI__HealthChecks:1:Uri=http://basket.api:8080/health
+      - HealthChecks-UI__HealthChecks:2:Name=Discount Health Check
+      - HealthChecks-UI__HealthChecks:2:Uri=http://discount.api:8080/health
+      - HealthChecks-UI__HealthChecks:3:Name=Discount gRPC Health Check
+      - HealthChecks-UI__HealthChecks:3:Uri=http://discount.grpc:8080/health
+      - HealthChecks-UI__HealthChecks:4:Name=Ordering Health Check
+      - HealthChecks-UI__HealthChecks:4:Uri=http://ordering.api:8080/health
+      - HealthChecks-UI__HealthChecks:5:Name=Shopping Aggregator Health Check
+      - HealthChecks-UI__HealthChecks:5:Uri=http://shopping.aggregator:8080/health
+      - HealthChecks-UI__HealthChecks:6:Name=Web App Health Check
+      - HealthChecks-UI__HealthChecks:6:Uri=http://aspnetrunbasics:8080/health
+    ports:
+      - "8007:8080"
