@@ -16,7 +16,11 @@ namespace Basket.API.GrpcServices
         public async Task<CouponModel> GetDiscount(string productName)
         {
             var discountRequest = new GetDiscountRequest { ProductName = productName };
-            return await _discountProtoService.GetDiscountAsync(discountRequest);
+            // return await _discountProtoService.GetDiscountAsync(discountRequest);
+            // TODO: Temporarily return empty CouponModel, seems like this whole gRPC needs a refactor
+            // currently getting this exception:
+            // Grpc.Core.RpcException: Status(StatusCode="Internal", Detail="Error starting gRPC call. HttpRequestException: The HTTP/2 server closed the connection. HTTP/2 error code 'HTTP_1_1_REQUIRED' (0xd). (HttpProtocolError) HttpProtocolException: The HTTP/2 server closed the connection. HTTP/2 error code 'HTTP_1_1_REQUIRED' (0xd). (HttpProtocolError)", DebugException="System.Net.Http.HttpRequestException: The HTTP/2 server closed the connection. HTTP/2 error code 'HTTP_1_1_REQUIRED' (0xd). (HttpProtocolError)")
+            return await Task.FromResult(new CouponModel());
         }
     }
 }
